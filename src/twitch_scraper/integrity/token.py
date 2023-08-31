@@ -37,26 +37,32 @@ class TokenManager(metaclass=Singleton):
         driver.get(url)
         # Wait for ad
         sleep(50)
-        for i in range(20):
-            driver.find_element(
-                By.CSS_SELECTOR,
-                "html",
-            ).send_keys(Keys.ARROW_RIGHT)
-            sleep(1)
-        sleep(30)
-        requests = driver.requests.copy()
-        requests.reverse()
-        for request in requests:
-            try:
-                if (
-                    action in request.body.decode("utf-8")
-                    and "Client-Integrity" in request.headers
-                ):
-                    print(f"Got headers: {self._headers}")
-                    driver.quit()
-                    return {**request.headers}
-            except:
-                pass
+        # Advance video
+        cont = 0
+        while cont < 10:
+            for i in range(20):
+                driver.find_element(
+                    By.CSS_SELECTOR,
+                    "html",
+                ).send_keys(Keys.ARROW_RIGHT)
+                sleep(1)
+            sleep(30)
+            requests = driver.requests.copy()
+            requests.reverse()
+            for request in requests:
+                try:
+                    if (
+                        action in request.body.decode("utf-8")
+                        and "Client-Integrity" in request.headers
+                    ):
+                        print(f"Got headers: {self._headers}")
+                        driver.quit()
+                        return {**request.headers}
+                except:
+                    pass
+            cont += 1
+        print("Tried a lot to get token but could not get it")
+        raise Exception()
         driver.quit()
         return {}
 
