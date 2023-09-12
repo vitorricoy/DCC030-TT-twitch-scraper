@@ -1,6 +1,4 @@
 import json
-import random
-import string
 from typing import Any
 from twitch_scraper.scraper.headers import twitch_base_headers
 
@@ -111,7 +109,27 @@ class TwitchVideoCommentsScraper:
                 comments = response[0]["data"]["video"]["comments"]
 
                 comments_res.extend(
-                    [comment["node"] for comment in comments["edges"]]
+                    [
+                        {
+                            "id": comment["node"]["id"],
+                            "commenter_login": comment["node"]["commenter"][
+                                "login"
+                            ],
+                            "content_offset": comment["node"][
+                                "contentOffsetSeconds"
+                            ],
+                            "created_at": comment["node"]["createdAt"],
+                            "message": " ".join(
+                                [
+                                    fragment["text"]
+                                    for fragment in comment["node"]["message"][
+                                        "fragments"
+                                    ]
+                                ]
+                            ),
+                        }
+                        for comment in comments["edges"]
+                    ]
                 )
 
                 if not comments["pageInfo"]["hasNextPage"]:
