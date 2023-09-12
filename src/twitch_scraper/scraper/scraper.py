@@ -114,7 +114,9 @@ class TwitchVideoCommentsScraper:
                             "id": comment["node"]["id"],
                             "commenter_login": comment["node"]["commenter"][
                                 "login"
-                            ],
+                            ]
+                            if comment["node"]["commenter"]
+                            else None,
                             "content_offset": comment["node"][
                                 "contentOffsetSeconds"
                             ],
