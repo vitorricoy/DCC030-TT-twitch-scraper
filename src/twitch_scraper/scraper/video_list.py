@@ -21,7 +21,7 @@ class TwitchVideoList:
         return (
             '{"query":"query { \\n  user(login: \\"'
             + streamer_login
-            + '\\") {\\n    login\\n    videos(sort: TIME) {\\n      edges {\\n        node {\\n          id\\n          title\\n          viewCount\\n          createdAt\\n          lengthSeconds\\n          broadcastType\\n        }\\n      }\\n    }\\n  }\\n}","variables":{}}'
+            + '\\") {\\n    login\\n    videos(sort: TIME, options: {minLengthSeconds: 1200}) {\\n      edges {\\n        node {\\n          id\\n          title\\n          viewCount\\n          createdAt\\n          lengthSeconds\\n          broadcastType\\n        }\\n      }\\n    }\\n  }\\n}","variables":{}}'
         )
 
     def get_video_list(self, streamer_login: str):
