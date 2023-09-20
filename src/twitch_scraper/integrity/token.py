@@ -3,7 +3,6 @@ from typing import Any
 from seleniumwire.undetected_chromedriver.v2 import Chrome, ChromeOptions
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-import undetected_chromedriver as uc
 
 
 class Singleton(type):
@@ -16,6 +15,8 @@ class Singleton(type):
             )
         return cls._instances[cls]
 
+USER_DATA_DIR = "C:\\Users\\Vitor Rodarte\\AppData\\Local\\Google\\Chrome\\Profile 1"
+BINARY_LOCATION = "C:\\Program Files\\Google\\Chrome\\Application"
 
 class TokenManager(metaclass=Singleton):
     _headers: dict[str, Any] = {}
@@ -24,12 +25,14 @@ class TokenManager(metaclass=Singleton):
         print("Scrapping token from twitch page in Chrome...")
         options = ChromeOptions()
         options.add_argument(
-            "--user-data-dir=/home/vitorricoy/.config/google-chrome/Profile 3"
+            f"--user-data-dir={USER_DATA_DIR}"
         )
         options.add_argument("--allow-running-insecure-content")
         # options.add_argument("--headless")
         options.add_argument("--no-sandbox")
-        options.binary_location = "/opt/google/chrome"
+        options.add_argument('--ignore-ssl-errors=yes')
+        options.add_argument('--ignore-certificate-errors') 
+        options.binary_location = USER_DATA_DIR
         options.add_argument(
             f"--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
         )
@@ -62,9 +65,8 @@ class TokenManager(metaclass=Singleton):
                     pass
             cont += 1
         print("Tried a lot to get token but could not get it")
-        raise Exception()
         driver.quit()
-        return {}
+        raise Exception()
 
     def get_token(self, url: str, action: str):
         if self._headers == {}:
